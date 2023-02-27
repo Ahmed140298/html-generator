@@ -4,7 +4,7 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
-const Employee = require('./lib/Employee')
+
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
@@ -19,13 +19,12 @@ inquirer
       //manager questions
       type: "text",
       name: "name",
-      message: "What is your name? ",
+      message: "What is the team name? ",
       validate: (name) => {
-        if (name) {
-          return true;
+        if (!name) {
+          return "You must enter a name!";
         } else {
-          console.log("You must enter a name!");
-          return false;
+          return true;
         }
       },
     },
@@ -34,11 +33,11 @@ inquirer
       id: "id",
       message: "What is your id number? ",
       validate: (id) => {
-        if (id) {
-          return true;
+        const validId = /^\d+$/.test(id) && parseInt(id) > 0;
+        if (!validId) {
+          return "You must enter an ID number!";
         } else {
-          console.log("You must enter an Id number!");
-          return false;
+          return true;
         }
       },
     },
@@ -47,11 +46,11 @@ inquirer
       name: "email",
       message: "What is your email Address? ",
       validate: (email) => {
-        if (email) {
-          return true;
+        const validEmail = /\S+@\S+\.\S+/.test(email);
+        if (!validEmail) {
+          return "You must enter an email address!"
         } else {
-          console.log("You must enter an email address!");
-          return false;
+          return true;
         }
       },
     },
@@ -60,20 +59,20 @@ inquirer
       name: "officeNumber",
       message: "What is your office number? ",
       validate: (officeNumber) => {
-        if (officeNumber) {
-          return true;
+        const validNumber = /^\d+$/.test(officeNumber) && parseInt(officeNumber) > 0;
+        if (!validNumber) {
+          return "You must enter an office number!";
         } else {
-          console.log("You must enter an office number!");
-          return false;
+          return true;
         }
       },
     },
   ])
   .then((response) => {
     // populate manager info
-    const { name, id, email, officeNumber } = response;
-    const manager = new Manager(name, id, email, officeNumber);
+    const manager = new Manager(response.name, response.id, response.email, response.officeNumber);
     employees.push(manager);
+    promptForNextEmployee();
   });
 
 const promptForNextEmployee = () => {
@@ -83,7 +82,7 @@ const promptForNextEmployee = () => {
         type: "list",
         message: "What employee would you like to add? ",
         name: "role",
-        choices: ["Engineer", "Intern"],
+        choices: ["Engineer", "Intern", "I don't want to add any more team member. "],
       },
     ])
     .then((response) => {
@@ -93,13 +92,12 @@ const promptForNextEmployee = () => {
       //    promptForIntern
       // else
       //    use the functionality from page-template to generate the team
-      let { name, id, email, role, github, school } = response;
-      if (role === "Engineer") {
+      if (response.role === "Engineer") {
         promptForEngineer();
-      } else if (role === "Intern") {
+      } else if (response.role === "Intern") {
         promptForIntern();
       } else {
-        buildPage();
+        fs.writeFile(outputPath, render(employees), (err) => err ? console.error(err) : console.log('Successfully generated team.html'));
       }
     });
 };
@@ -111,53 +109,48 @@ const promptForEngineer = () => {
         //engineer questions
         type: "text",
         name: "name",
-        message: "What is the name of the employee? ",
+        message: "What is the name of the engineer? ",
         validate: (nameInput) => {
-          if (nameInput) {
-            return true;
+          if (!nameInput) {
+            return "You must enter a name! ";
           } else {
-            console.log("You must enter a name! ");
-            return false;
+            return true;
           }
         },
       },
       {
         type: "text",
         name: "id",
-        message: "What is the employee Id number? ",
+        message: "What is the enginner's Id number? ",
         validate: (idInput) => {
-          if (idInput) {
-            return true;
+          if (!idInput) {
+            return "You must enter an Id number! ";;
           } else {
-            console.log("You must enter an Id number! ");
-            return false;
+            return true;
           }
         },
       },
       {
         type: "text",
         name: "email",
-        message: "What is the email address of the employee? ",
+        message: "What is the email address of the engineer? ",
         validate: (emailInput) => {
-          if (emailInput) {
-            return true;
+          if (!emailInput) {
+            return "You need to enter an email! ";
           } else {
-            console.log("You need to enter an email! ");
-            return false;
+            return true;
           }
         },
       },
       {
         type: "text",
         name: "github",
-        message: "What is GitHub username of employee? ",
-        when: (input) => input.role === "Engineer",
+        message: "What is GitHub username of engineer? ",
         validate: (github) => {
-          if (github) {
-            return true;
+          if (!github) {
+            return "You need to enter a github username! ";
           } else {
-            console.log("You need to enter a github username! ");
-            return false;
+            return true;
           }
         },
       },
@@ -165,8 +158,8 @@ const promptForEngineer = () => {
     .then((response) => {
       // add new engineer to employees array
       // promptForNextEmployee
-      const engineer = new Engineer(name, id, email, github);
-      Employee.push(engineer);
+      const engineer = new Engineer(response.name, response.id, response.email, response.github);
+      employees.push(engineer);
       promptForNextEmployee();
     });
 };
@@ -178,39 +171,36 @@ const promptForIntern = () => {
         //intern questions
           type: "text",
           name: "name",
-          message: "What is the name of the employee? ",
+          message: "What is the name of the intern? ",
           validate: (nameInput) => {
-            if (nameInput) {
-              return true;
+            if (!nameInput) {
+              return "You must enter a name! ";
             } else {
-              console.log("You must enter a name! ");
-              return false;
+              return true;
             }
           },
         },
         {
           type: "text",
           name: "id",
-          message: "What is the employee Id number? ",
+          message: "What is the intern's Id number? ",
           validate: (idInput) => {
-            if (idInput) {
-              return true;
+            if (!idInput) {
+              return "You must enter an Id number! ";
             } else {
-              console.log("You must enter an Id number! ");
-              return false;
+              return true;
             }
           },
         },
         {
           type: "text",
           name: "email",
-          message: "What is the email address of the employee? ",
+          message: "What is the email address of the intern? ",
           validate: (emailInput) => {
-            if (emailInput) {
-              return true;
+            if (!emailInput) {
+              return "You need to enter an email! ";
             } else {
-              console.log("You need to enter an email! ");
-              return false;
+              return true;
             }
           },
         },
@@ -218,13 +208,11 @@ const promptForIntern = () => {
           type: "text",
           name: "school",
           message: "Where does the intern attend school? ",
-          when: (input) => input.role === "Intern",
           validate: (school) => {
-            if (school) {
-              return true;
+            if (!school) {
+              return "You need to enter a school! ";
             } else {
-              console.log("You need to enter a school! ");
-              return false;
+              return true;
             }
           },
       },
@@ -232,23 +220,15 @@ const promptForIntern = () => {
     .then((response) => {
       // add new intern to employees array
       // promptForNextEmployee
-      const intern = new Intern(name, id, email, school);
-      Employee.push(intern);
+      const intern = new Intern(response.name, response.id, response.email, response.school);
+      employees.push(intern);
       promptForNextEmployee();
     });
 };
 
-const buildPage = () => {
-  // render(myArrayOfTeamMembers)
-  outputPath= render(data)
-    fs.writeFile('./team.html', outputPath, err => {
-        if (err) {
-            console.log(err);
-            return;
-        } else {
-            console.log("Page created! Check out team.html")
-        }
-    })
-};
+// const buildPage = () => {
+//   // render(myArrayOfTeamMembers)
+  
+// };
 
-buildPage();
+// buildPage();
