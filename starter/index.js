@@ -92,7 +92,7 @@ const promptForNextEmployee = () => {
           if (nameInput) {
             return true;
           } else {
-            console.log("You must enter a name!");
+            console.log("You must enter a name! ");
             return false;
           }
         },
@@ -113,12 +113,12 @@ const promptForNextEmployee = () => {
       {
         type: "text",
         name: "email",
-        message: "What is the email address of the employee?",
+        message: "What is the email address of the employee? ",
         validate: (emailInput) => {
           if (emailInput) {
             return true;
           } else {
-            console.log("You need to enter an email!");
+            console.log("You need to enter an email! ");
             return false;
           }
         },
@@ -126,13 +126,13 @@ const promptForNextEmployee = () => {
       {
         type: "text",
         name: "github",
-        message: "What is GitHub username of employee?",
+        message: "What is GitHub username of employee? ",
         when: (input) => input.role === "Engineer",
         validate: (github) => {
           if (github) {
             return true;
           } else {
-            console.log("You need to enter a github username!");
+            console.log("You need to enter a github username! ");
             return false;
           }
         },
@@ -140,13 +140,13 @@ const promptForNextEmployee = () => {
       {
         type: "text",
         name: "school",
-        message: "Where does the intern attend school?",
+        message: "Where does the intern attend school? ",
         when: (input) => input.role === "Intern",
         validate: (school) => {
           if (school) {
             return true;
           } else {
-            console.log("You need to enter a school!");
+            console.log("You need to enter a school! ");
             return false;
           }
         },
@@ -154,7 +154,7 @@ const promptForNextEmployee = () => {
       {
         type: "confirm",
         name: "confirmAddEmployee",
-        message: "Would you like to add another employee?",
+        message: "Would you like to add another employee? ",
         default: false,
       },
     ])
