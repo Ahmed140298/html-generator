@@ -93,15 +93,9 @@ const promptForNextEmployee = () => {
       // else
       //    use the functionality from page-template to generate the team
       let { name, id, email, role, github, school } = response;
-      let employee;
-
       if (role === "Engineer") {
-        employee = new Engineer(name, id, email, github);
-        console.log(employee);
         promptForEngineer();
       } else if (role === "Intern") {
-        employee = new Intern(name, id, email, school);
-        console.log(employee);
         promptForIntern();
       }
       employees.push(employee);
@@ -169,6 +163,9 @@ const promptForEngineer = () => {
     .then((response) => {
       // add new engineer to employees array
       // promptForNextEmployee
+      const engineer = new Engineer(name, id, email, github);
+      console.log(engineer);
+      promptForNextEmployee();
     });
 };
 
@@ -233,10 +230,13 @@ const promptForIntern = () => {
     .then((response) => {
       // add new intern to employees array
       // promptForNextEmployee
+      const intern = new Intern(name, id, email, school);
+      console.log(intern);
+      promptForNextEmployee();
     });
 };
 
 const buildPage = () => {
   // render(myArrayOfTeamMembers)
-  
+
 };
