@@ -9,7 +9,7 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
-
+const employees = [];
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
 inquirer
@@ -84,11 +84,39 @@ const promptForNextEmployee = () => {
         name: "role",
         choices: ["Engineer", "Intern"],
       },
+    ])
+    .then((response) => {
+      // if engineer
+      //    promptForEngineer
+      // else if intern
+      //    promptForIntern
+      // else
+      //    use the functionality from page-template to generate the team
+      let { name, id, email, role, github, school } = response;
+      let employee;
+
+      if (role === "Engineer") {
+        employee = new Engineer(name, id, email, github);
+        console.log(employee);
+        promptForEngineer();
+      } else if (role === "Intern") {
+        employee = new Intern(name, id, email, school);
+        console.log(employee);
+        promptForIntern();
+      }
+      employees.push(employee);
+    });
+};
+
+const promptForEngineer = () => {
+  inquirer
+    .prompt([
       {
+        //engineer questions
         type: "text",
         name: "name",
         message: "What is the name of the employee? ",
-        validate: nameInput => {
+        validate: (nameInput) => {
           if (nameInput) {
             return true;
           } else {
@@ -137,43 +165,6 @@ const promptForNextEmployee = () => {
           }
         },
       },
-      {
-        type: "text",
-        name: "school",
-        message: "Where does the intern attend school? ",
-        when: (input) => input.role === "Intern",
-        validate: (school) => {
-          if (school) {
-            return true;
-          } else {
-            console.log("You need to enter a school! ");
-            return false;
-          }
-        },
-      },
-      {
-        type: "confirm",
-        name: "confirmAddEmployee",
-        message: "Would you like to add another employee? ",
-        default: false,
-      },
-    ])
-    .then((response) => {
-      // if engineer
-      //    promptForEngineer
-      // else if intern
-      //    promptForIntern
-      // else
-      //    use the functionality from page-template to generate the team
-    });
-};
-
-const promptForEngineer = () => {
-  inquirer
-    .prompt([
-      {
-        //engineer questions
-      },
     ])
     .then((response) => {
       // add new engineer to employees array
@@ -186,6 +177,57 @@ const promptForIntern = () => {
     .prompt([
       {
         //intern questions
+          type: "text",
+          name: "name",
+          message: "What is the name of the employee? ",
+          validate: (nameInput) => {
+            if (nameInput) {
+              return true;
+            } else {
+              console.log("You must enter a name! ");
+              return false;
+            }
+          },
+        },
+        {
+          type: "text",
+          name: "id",
+          message: "What is the employee Id number? ",
+          validate: (idInput) => {
+            if (idInput) {
+              return true;
+            } else {
+              console.log("You must enter an Id number! ");
+              return false;
+            }
+          },
+        },
+        {
+          type: "text",
+          name: "email",
+          message: "What is the email address of the employee? ",
+          validate: (emailInput) => {
+            if (emailInput) {
+              return true;
+            } else {
+              console.log("You need to enter an email! ");
+              return false;
+            }
+          },
+        },
+        {
+          type: "text",
+          name: "school",
+          message: "Where does the intern attend school? ",
+          when: (input) => input.role === "Intern",
+          validate: (school) => {
+            if (school) {
+              return true;
+            } else {
+              console.log("You need to enter a school! ");
+              return false;
+            }
+          },
       },
     ])
     .then((response) => {
@@ -196,4 +238,5 @@ const promptForIntern = () => {
 
 const buildPage = () => {
   // render(myArrayOfTeamMembers)
+  
 };
