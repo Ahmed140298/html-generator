@@ -4,6 +4,7 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
+const Employee = require('./lib/Employee')
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
@@ -97,8 +98,9 @@ const promptForNextEmployee = () => {
         promptForEngineer();
       } else if (role === "Intern") {
         promptForIntern();
+      } else {
+        buildPage();
       }
-      employees.push(employee);
     });
 };
 
@@ -164,7 +166,7 @@ const promptForEngineer = () => {
       // add new engineer to employees array
       // promptForNextEmployee
       const engineer = new Engineer(name, id, email, github);
-      console.log(engineer);
+      Employee.push(engineer);
       promptForNextEmployee();
     });
 };
@@ -231,12 +233,22 @@ const promptForIntern = () => {
       // add new intern to employees array
       // promptForNextEmployee
       const intern = new Intern(name, id, email, school);
-      console.log(intern);
+      Employee.push(intern);
       promptForNextEmployee();
     });
 };
 
 const buildPage = () => {
   // render(myArrayOfTeamMembers)
-
+  outputPath= render(data)
+    fs.writeFile('./team.html', outputPath, err => {
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+            console.log("Page created! Check out team.html")
+        }
+    })
 };
+
+buildPage();
