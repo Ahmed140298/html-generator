@@ -54,19 +54,20 @@ const promptForNextEmployee = () => {
       {
         type: "list",
         message: "What employee would you like to add? ",
-        name: "menu",
+        name: "role",
         choices: ["Add an engineer ", "Add an intern ", "Finish building the team "],
       },
     ])
     .then((response) => {
-      if (response.menu === 'Add an engineer') {
+      if (response.role === 'Add an engineer') {
         promptForEngineer();
       }
-      else if (response.menu === 'Add an intern') {
+      if (response.role === 'Add an intern') {
         promptForIntern();
       }
       else {
-        fs.writeFile(outputPath, render(employees), (err) => err ? console.error(err) : console.log('Successfully generated team.html'));
+        const html = render(employees);
+        fs.writeFile(outputPath, html, (err) => err ? console.error(err) : console.log('Successfully generated team.html'));
       }
     });
 };
