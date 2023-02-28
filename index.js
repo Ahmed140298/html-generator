@@ -10,14 +10,14 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
 
-const employees = [];
+const employees = []
 
 inquirer
   .prompt([
     {
       //manager questions
       type: "input",
-      message: "What is the team name? ",
+      message: "What is your name? ",
       name: "name",
     },
     {
@@ -54,16 +54,18 @@ const promptForNextEmployee = () => {
       {
         type: "list",
         message: "What employee would you like to add? ",
-        name: "newMemeber",
-        choices: ["Engineer ", "Intern ", "Done "],
+        name: "menu",
+        choices: ["Add an engineer ", "Add an intern ", "Finish building the team "],
       },
     ])
     .then((response) => {
-      if (response.newMemeber === "Engineer") {
+      if (response.menu === 'Add an engineer') {
         promptForEngineer();
-      } else if (response.newMemeber === "Intern") {
+      }
+      else if (response.menu === 'Add an intern') {
         promptForIntern();
-      } else {
+      }
+      else {
         fs.writeFile(outputPath, render(employees), (err) => err ? console.error(err) : console.log('Successfully generated team.html'));
       }
     });

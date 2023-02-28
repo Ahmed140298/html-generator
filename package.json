@@ -6,6 +6,10 @@
   "directories": {
     "lib": "lib"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ahmed140298/html-page-generator"
+  },
   "scripts": {
     "test": "jest"
   },
